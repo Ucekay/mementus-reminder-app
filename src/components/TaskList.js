@@ -98,14 +98,14 @@ const TaskList = ({ tasks, updateTasks }) => {
         item.completed === false && (
           <View className="h-8 flex-row items-center gap-4 my-1 px-4">
             <Pressable
-              className="w-4 h-4 rounded-full border border-white"
+              className="w-4 h-4 border rounded-full border-white"
               onPress={() =>
                 handlePress(index, displayedTasks.indexOf(section))
               }
             />
             <View>
               <Text className="text-sm font-semibold text-white">
-                {item.content + displayedTasks.indexOf(section) + " " + index}
+                {item.content}
               </Text>
               {item.time && (
                 <Text className="text-xs font-normal text-zinc-500">
@@ -116,7 +116,7 @@ const TaskList = ({ tasks, updateTasks }) => {
           </View>
         )
       }
-      renderSectionHeader={({ section: { title } }) => {
+      renderSectionHeader={({ section, section: { title } }) => {
         let date = new Date(title);
         let dateJapanese = date.toLocaleDateString("ja-JP", {
           month: "long",
@@ -135,6 +135,12 @@ const TaskList = ({ tasks, updateTasks }) => {
                 明日
               </Text>
             )}
+            {showExpiredTasks &&
+              displayedTasks.indexOf(section) < todayIndex && (
+                <Text className="text-[17px] font-normal text-orange-500">
+                  {`${todayIndex - displayedTasks.indexOf(section)}日前`}
+                </Text>
+              )}
           </View>
         );
       }}
