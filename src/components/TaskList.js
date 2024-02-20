@@ -7,6 +7,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { useImmer } from "use-immer";
+import TaskListSection from "./taskListSection";
 
 const TaskList = ({ tasks, updateTasks }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -18,9 +19,7 @@ const TaskList = ({ tasks, updateTasks }) => {
   const tomorrowDate = tomorrowString.slice(0, 10);
   const todayIndex = tasks.findIndex((section) => section.title === todayDate);
   const [visibleTasks, updateVisibleTasks] = useImmer(
-    tasks
-      .filter((section) => !section.data.every((task) => task.completed))
-      .filter((section) => section.title !== null)
+    tasks.filter((section) => !section.data.every((task) => task.completed))
   );
   const [upcomingTasks, updateUpcomingTasks] = useImmer(
     visibleTasks.slice(todayIndex)
@@ -117,32 +116,35 @@ const TaskList = ({ tasks, updateTasks }) => {
         )
       }
       renderSectionHeader={({ section, section: { title } }) => {
-        let date = new Date(title);
-        let dateJapanese = date.toLocaleDateString("ja-JP", {
-          month: "long",
-          day: "numeric",
-        });
-        return (
-          <View className="flex flex-row h-11 justify-between bg-black px-4 py-3">
-            <Text className="text-[17px] font-normal text-white">
+        if (title === null) {
+          return (
+            <TaskListSection displayedTasks={displayedTasks} section={section}>
+              期日なし
+            </TaskListSection>
+          );
+        } else {
+          let date = new Date(title);
+          let dateJapanese = date.toLocaleDateString("ja-JP", {
+            month: "long",
+            day: "numeric",
+          });
+          let sectionIndex = displayedTasks.indexOf(section);
+          const showNDaysAgo = showExpiredTasks && sectionIndex < todayIndex;
+
+          return (
+            <TaskListSection
+              title={title}
+              todayDate={todayDate}
+              tomorrowDate={tomorrowDate}
+              showExpiredTasks={showExpiredTasks}
+              displayedTasks={displayedTasks}
+              todayIndex={todayIndex}
+              section={section}
+            >
               {dateJapanese}
-            </Text>
-            {title === todayDate && (
-              <Text className="text-[17px] font-normal text-white">今日</Text>
-            )}
-            {title === tomorrowDate && (
-              <Text className="text-[17px] font-normal text-neutral-600">
-                明日
-              </Text>
-            )}
-            {showExpiredTasks &&
-              displayedTasks.indexOf(section) < todayIndex && (
-                <Text className="text-[17px] font-normal text-orange-500">
-                  {`${todayIndex - displayedTasks.indexOf(section)}日前`}
-                </Text>
-              )}
-          </View>
-        );
+            </TaskListSection>
+          );
+        }
       }}
     />
   );
