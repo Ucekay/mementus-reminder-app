@@ -63,19 +63,19 @@ const TaskList = ({ tasks, updateTasks }) => {
   const onRefresh = () => {
     if (!showExpiredTasks) {
       setRefreshing(true);
-      setShowExpiredTasks(true);
       setTimeout(() => {
-        updateDisplayedTasks(visibleTasks);
         setRefreshing(false);
+        updateDisplayedTasks(visibleTasks);
+        setShowExpiredTasks(true);
         setRefreshingTitle("Pull to hide expired tasks");
       }, 1000);
     } else if (showExpiredTasks) {
       setRefreshing(true);
-      setShowExpiredTasks(false);
       setTimeout(() => {
-        setRefreshingTitle("Pull to show expired tasks");
         setRefreshing(false);
         updateDisplayedTasks(upcomingTasks);
+        setShowExpiredTasks(false);
+        setRefreshingTitle("Pull to show expired tasks");
       }, 1000);
     }
   };
