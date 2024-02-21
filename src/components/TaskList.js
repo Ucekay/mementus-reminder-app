@@ -102,7 +102,7 @@ const TaskList = ({ tasks, updateTasks }) => {
                 handlePress(index, displayedTasks.indexOf(section))
               }
             >
-              <View className="m-1.5 size-4 rounded-full border border-white"></View>
+              <View className="m-1.5 size-4 rounded-full border border-green-200"></View>
             </Pressable>
             <View>
               <Text className="text-sm font-semibold text-white">
