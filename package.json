@@ -6,7 +6,10 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint ./src",
+    "lint:debug": "eslint ./src --debug",
+    "lint:fix": "eslint ./src --fix"
   },
   "dependencies": {
     "@npmcli/fs": "^3.1.0",
@@ -31,8 +34,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
+    "@types/bun": "latest",
+    "@typescript-eslint/parser": "^7.0.2",
     "eslint": "^8.56.0",
-    "@types/bun": "latest"
+    "eslint-plugin-tailwindcss": "^3.14.2"
   },
   "private": true,
   "peerDependencies": {

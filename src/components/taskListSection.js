@@ -11,7 +11,7 @@ export default function TaskListSection({
   section,
 }) {
   return (
-    <View className="flex flex-row h-11 justify-between bg-black px-4 py-3">
+    <View className="flex h-11 flex-row justify-between bg-black px-4 py-3">
       <Text className="text-[17px] font-normal text-white">{children}</Text>
       {title === todayDate && (
         <Text className="text-[17px] font-normal text-white">今日</Text>

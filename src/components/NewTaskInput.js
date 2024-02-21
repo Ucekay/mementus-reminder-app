@@ -1,17 +1,28 @@
 import { View, Text, TextInput, Pressable } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const NewTaskInput = () => {
+const NewTaskInput = ({ tasks, updateTasks }) => {
   const [text, onChangeText] = useState("");
   const [newTask, setNewTask] = useState("");
   handleAdd = () => {
-    setNewTask(text);
+    if (text !== "") {
+      updateTasks((draft) => {
+        draft[draft.length - 1].data.push({
+          content: text,
+          time: null,
+          completed: false,
+        });
+      });
+    }
     onChangeText("");
-    console.log(text);
   };
+  useEffect(() => {
+    console.log(tasks);
+  }, [tasks]);
+
   return (
-    <View className="w-full items-center flex-row gap-4 bg-black m-0">
-      <View className="h-4 w-4 border rounded-full border-white m-4" />
+    <View className="m-0 w-full flex-row items-center gap-4 bg-black">
+      <View className="m-4 size-4 rounded-full border border-white" />
       <TextInput
         className="grow text-white"
         placeholder="新しいタスクを追加"
@@ -21,9 +32,9 @@ const NewTaskInput = () => {
       />
       <Pressable
         onPress={handleAdd}
-        className="shrink bg-neutral-600 m-4 rounded-md"
+        className="m-4 shrink rounded-md bg-neutral-600"
       >
-        <Text className="text-white my-1 mx-3">追加</Text>
+        <Text className="mx-3 my-1 text-white">追加</Text>
       </Pressable>
     </View>
   );

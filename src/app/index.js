@@ -20,7 +20,7 @@ function Page() {
         <View className="flex-1">
           <TaskList tasks={tasks} updateTasks={updateTasks} />
           <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={84}>
-            <NewTaskCard />
+            <NewTaskCard tasks={tasks} updateTasks={updateTasks} />
           </KeyboardAvoidingView>
         </View>
       </SafeAreaView>

@@ -24,16 +24,16 @@ const WithoutDueDate = ({ tasks, setTasks }) => {
           item.completed === false && (
             <View className="inline-flex flex-row items-center gap-4 px-4">
               <Pressable
-                className="w-4 h-4 rounded-full border border-white"
+                className="size-4 rounded-full border border-white"
                 onPress={() =>
                   handlePress(index, tasksWithoutDueDate.indexOf(section))
                 }
               />
               <View>
-                <Text className="text-sm font-semibold text-white pt-1">
+                <Text className="pt-1 text-sm font-semibold text-white">
                   {item.content}
                 </Text>
-                <Text className="text-xs font-normal text-zinc-500 pb-1">
+                <Text className="pb-1 text-xs font-normal text-zinc-500">
                   期限なし
                 </Text>
               </View>

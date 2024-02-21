@@ -7,7 +7,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { useImmer } from "use-immer";
-import TaskListSection from "./taskListSection";
+import TaskListSection from "./TaskListSection";
 
 const TaskList = ({ tasks, updateTasks }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -95,13 +95,15 @@ const TaskList = ({ tasks, updateTasks }) => {
       }
       renderItem={({ item, index, section }) =>
         item.completed === false && (
-          <View className="h-8 flex-row items-center gap-4 my-1 px-4">
+          <View className="my-1 h-8 flex-row items-center gap-2 pl-2 pr-4">
             <Pressable
-              className="w-4 h-4 border rounded-full border-white"
+              className="size-8"
               onPress={() =>
                 handlePress(index, displayedTasks.indexOf(section))
               }
-            />
+            >
+              <View className="m-1.5 size-4 rounded-full border border-white"></View>
+            </Pressable>
             <View>
               <Text className="text-sm font-semibold text-white">
                 {item.content}
