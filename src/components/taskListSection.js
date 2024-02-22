@@ -20,7 +20,7 @@ export default function TaskListSection({
         <Text className="text-[17px] font-normal text-neutral-600">明日</Text>
       )}
       {showExpiredTasks && displayedTasks.indexOf(section) < todayIndex && (
-        <Text className="text-[17px] font-normal text-orange-500">
+        <Text className="text-sm font-normal text-red-700">
           {`${todayIndex - displayedTasks.indexOf(section)}日前`}
         </Text>
       )}
