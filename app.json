@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyAwesomeApp",
-    "slug": "MyAwesomeApp",
+    "name": "mementus",
+    "slug": "mementus",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
