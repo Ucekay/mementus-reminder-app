@@ -10,10 +10,7 @@ import NewTaskCard from "../components/NewTaskCard";
 
 import taskData from "../taskData";
 
-import { verifyInstallation } from "nativewind";
-
 function Page() {
-  verifyInstallation();
   const [tasks, updateTasks] = useImmer(taskData);
   return (
     <SafeAreaProvider>
