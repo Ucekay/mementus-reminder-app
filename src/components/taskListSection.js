@@ -6,9 +6,7 @@ export default function TaskListSection({
   todayDate = "2024-02-31",
   tomorrowDate = "2024-02-31",
   showExpiredTasks = null,
-  tasks,
   todayIndex,
-  section,
   sectionIndex,
 }) {
   return (

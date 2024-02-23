@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Pressable } from "react-native";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const NewTaskInput = ({ tasks, updateTasks }) => {
   const [text, onChangeText] = useState("");
@@ -15,9 +15,6 @@ const NewTaskInput = ({ tasks, updateTasks }) => {
     }
     onChangeText("");
   };
-  useEffect(() => {
-    console.log(tasks);
-  }, [tasks]);
 
   return (
     <View className="m-0 w-full flex-row items-center gap-4 bg-black">

@@ -8,8 +8,9 @@ import {
 } from "react-native";
 import TaskListSection from "./TaskListSection";
 
-const TaskList = ({ tasks, updateTasks }) => {
+const TaskList = ({ tasks, updateTasks, isAppReady, setIsAppReady }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const today = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
   const todayString = today.toISOString();
   const todayDate = todayString.slice(0, 10);
@@ -18,7 +19,7 @@ const TaskList = ({ tasks, updateTasks }) => {
   const tomorrowDate = tomorrowString.slice(0, 10);
   const todayIndex = tasks.findIndex((section) => section.title === todayDate);
 
-  const [showExpiredTasks, setShowExpiredTasks] = useState(false);
+  const [showExpiredTasks, setShowExpiredTasks] = useState(true);
 
   const handlePress = (index, sectionIndex) => {
     updateTasks((draft) => {
@@ -36,14 +37,24 @@ const TaskList = ({ tasks, updateTasks }) => {
         setRefreshing(false);
         setShowExpiredTasks(true);
         setRefreshingTitle("Pull to hide expired tasks");
-      }, 1000);
+      }, 500);
     } else if (showExpiredTasks) {
       setRefreshing(true);
       setTimeout(() => {
         setRefreshing(false);
         setShowExpiredTasks(false);
         setRefreshingTitle("Pull to show expired tasks");
-      }, 1000);
+      }, 500);
+    }
+  };
+  const onLayout = () => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      setTimeout(() => {
+        setShowExpiredTasks(false);
+      }, 5);
+    } else if (!isAppReady) {
+      setIsAppReady(true);
     }
   };
 
@@ -60,9 +71,9 @@ const TaskList = ({ tasks, updateTasks }) => {
           titleColor={"#fff"}
         />
       }
+      onLayout={onLayout}
       renderItem={({ item, index, section }) => {
         let sectionIndex = tasks.indexOf(section);
-        console.log(sectionIndex);
         if (
           !showExpiredTasks &&
           sectionIndex >= todayIndex &&
@@ -119,11 +130,7 @@ const TaskList = ({ tasks, updateTasks }) => {
         });
         let sectionIndex = tasks.indexOf(section);
         if (title === null) {
-          return (
-            <TaskListSection tasks={tasks} section={section}>
-              期日なし
-            </TaskListSection>
-          );
+          return <TaskListSection section={section}>期日なし</TaskListSection>;
         } else if (!showExpiredTasks && sectionIndex >= todayIndex) {
           return (
             <TaskListSection
@@ -131,9 +138,7 @@ const TaskList = ({ tasks, updateTasks }) => {
               todayDate={todayDate}
               tomorrowDate={tomorrowDate}
               showExpiredTasks={showExpiredTasks}
-              tasks={tasks}
               todayIndex={todayIndex}
-              section={section}
               sectionIndex={sectionIndex}
             >
               {dateJapanese}
@@ -146,9 +151,7 @@ const TaskList = ({ tasks, updateTasks }) => {
               todayDate={todayDate}
               tomorrowDate={tomorrowDate}
               showExpiredTasks={showExpiredTasks}
-              tasks={tasks}
               todayIndex={todayIndex}
-              section={section}
               sectionIndex={sectionIndex}
             >
               {dateJapanese}
