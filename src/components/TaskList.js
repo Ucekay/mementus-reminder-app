@@ -21,7 +21,6 @@ const TaskList = ({ tasks, updateTasks }) => {
   const [showExpiredTasks, setShowExpiredTasks] = useState(false);
 
   const handlePress = (index, sectionIndex) => {
-    console.log(sectionIndex);
     updateTasks((draft) => {
       draft[sectionIndex].data[index].completed = true;
     });
