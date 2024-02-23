@@ -67,13 +67,6 @@ const tasks = [
     title: "2024-02-24",
     data: [
       { content: "call a friend", time: "10:00", completed: false },
-      { content: "go shopping", time: "16:00", completed: false },
-    ],
-  },
-  {
-    title: "2024-02-24",
-    data: [
-      { content: "call a friend", time: "10:00", completed: false },
       { content: "go shopping", time: "11:00", completed: false },
 
       {

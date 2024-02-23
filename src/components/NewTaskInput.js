@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 
 const NewTaskInput = ({ tasks, updateTasks }) => {
   const [text, onChangeText] = useState("");
-  const [newTask, setNewTask] = useState("");
   handleAdd = () => {
     if (text !== "") {
       updateTasks((draft) => {

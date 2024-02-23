@@ -6,7 +6,6 @@ import {
   Pressable,
   RefreshControl,
 } from "react-native";
-import { useImmer } from "use-immer";
 import TaskListSection from "./TaskListSection";
 
 const TaskList = ({ tasks, updateTasks }) => {
@@ -18,43 +17,14 @@ const TaskList = ({ tasks, updateTasks }) => {
   const tomorrowString = tomorrow.toISOString();
   const tomorrowDate = tomorrowString.slice(0, 10);
   const todayIndex = tasks.findIndex((section) => section.title === todayDate);
-  const [visibleTasks, updateVisibleTasks] = useImmer(
-    tasks.filter((section) => !section.data.every((task) => task.completed))
-  );
-  const [upcomingTasks, updateUpcomingTasks] = useImmer(
-    visibleTasks.slice(todayIndex)
-  );
-  const [displayedTasks, updateDisplayedTasks] = useImmer(upcomingTasks);
+
   const [showExpiredTasks, setShowExpiredTasks] = useState(false);
 
-  const makeTaskCompleted = (currentTasks, relativeSectionIndex, index) => {
-    currentTasks[relativeSectionIndex].data[index].completed = true;
-  };
-
   const handlePress = (index, sectionIndex) => {
-    if (!showExpiredTasks) {
-      updateUpcomingTasks((draft) =>
-        makeTaskCompleted(draft, sectionIndex, index)
-      );
-      updateVisibleTasks((draft) =>
-        makeTaskCompleted(draft, sectionIndex + todayIndex, index)
-      );
-      updateDisplayedTasks((draft) =>
-        makeTaskCompleted(draft, sectionIndex, index)
-      );
-    } else {
-      updateVisibleTasks((draft) =>
-        makeTaskCompleted(draft, sectionIndex, index)
-      );
-      if (sectionIndex >= todayIndex) {
-        updateUpcomingTasks((draft) =>
-          makeTaskCompleted(draft, sectionIndex - todayIndex, index)
-        );
-      }
-      updateDisplayedTasks((draft) =>
-        makeTaskCompleted(draft, sectionIndex, index)
-      );
-    }
+    console.log(sectionIndex);
+    updateTasks((draft) => {
+      draft[sectionIndex].data[index].completed = true;
+    });
   };
 
   const [refreshingTitle, setRefreshingTitle] = useState(
@@ -65,7 +35,6 @@ const TaskList = ({ tasks, updateTasks }) => {
       setRefreshing(true);
       setTimeout(() => {
         setRefreshing(false);
-        updateDisplayedTasks(visibleTasks);
         setShowExpiredTasks(true);
         setRefreshingTitle("Pull to hide expired tasks");
       }, 1000);
@@ -73,7 +42,6 @@ const TaskList = ({ tasks, updateTasks }) => {
       setRefreshing(true);
       setTimeout(() => {
         setRefreshing(false);
-        updateDisplayedTasks(upcomingTasks);
         setShowExpiredTasks(false);
         setRefreshingTitle("Pull to show expired tasks");
       }, 1000);
@@ -82,7 +50,7 @@ const TaskList = ({ tasks, updateTasks }) => {
 
   return (
     <SectionList
-      sections={displayedTasks}
+      sections={tasks}
       keyExtractor={(item, index) => item + index}
       refreshControl={
         <RefreshControl
@@ -93,55 +61,96 @@ const TaskList = ({ tasks, updateTasks }) => {
           titleColor={"#fff"}
         />
       }
-      renderItem={({ item, index, section }) =>
-        item.completed === false && (
-          <View className="my-1 h-8 flex-row items-center gap-2 pl-2 pr-4">
-            <Pressable
-              className="size-8"
-              onPress={() =>
-                handlePress(index, displayedTasks.indexOf(section))
-              }
-            >
-              <View className="m-1.5 size-4 rounded-full border border-white"></View>
-            </Pressable>
-            <View>
-              <Text className="text-sm font-semibold text-white">
-                {item.content}
-              </Text>
-              {item.time && (
-                <Text className="text-xs font-normal text-zinc-500">
-                  {item.time}
+      renderItem={({ item, index, section }) => {
+        let sectionIndex = tasks.indexOf(section);
+        console.log(sectionIndex);
+        if (
+          !showExpiredTasks &&
+          sectionIndex >= todayIndex &&
+          !item.completed
+        ) {
+          return (
+            <View className="my-1 h-8 flex-row items-center gap-2 pl-2 pr-4">
+              <Pressable
+                className="size-8"
+                onPress={() => handlePress(index, tasks.indexOf(section))}
+              >
+                <View className="m-1.5 size-4 rounded-full border border-white"></View>
+              </Pressable>
+              <View>
+                <Text className="text-sm font-semibold text-white">
+                  {item.content}
                 </Text>
-              )}
+                {item.time && (
+                  <Text className="text-xs font-normal text-zinc-500">
+                    {item.time}
+                  </Text>
+                )}
+              </View>
             </View>
-          </View>
-        )
-      }
+          );
+        } else if (showExpiredTasks && !item.completed) {
+          return (
+            <View className="my-1 h-8 flex-row items-center gap-2 pl-2 pr-4">
+              <Pressable
+                className="size-8"
+                onPress={() => handlePress(index, tasks.indexOf(section))}
+              >
+                <View className="m-1.5 size-4 rounded-full border border-white"></View>
+              </Pressable>
+              <View>
+                <Text className="text-sm font-semibold text-white">
+                  {item.content}
+                </Text>
+                {item.time && (
+                  <Text className="text-xs font-normal text-zinc-500">
+                    {item.time}
+                  </Text>
+                )}
+              </View>
+            </View>
+          );
+        }
+      }}
       renderSectionHeader={({ section, section: { title } }) => {
+        let date = new Date(title);
+        let dateJapanese = date.toLocaleDateString("ja-JP", {
+          month: "long",
+          day: "numeric",
+        });
+        let sectionIndex = tasks.indexOf(section);
         if (title === null) {
           return (
-            <TaskListSection displayedTasks={displayedTasks} section={section}>
+            <TaskListSection tasks={tasks} section={section}>
               期日なし
             </TaskListSection>
           );
-        } else {
-          let date = new Date(title);
-          let dateJapanese = date.toLocaleDateString("ja-JP", {
-            month: "long",
-            day: "numeric",
-          });
-          let sectionIndex = displayedTasks.indexOf(section);
-          const showNDaysAgo = showExpiredTasks && sectionIndex < todayIndex;
-
+        } else if (!showExpiredTasks && sectionIndex >= todayIndex) {
           return (
             <TaskListSection
               title={title}
               todayDate={todayDate}
               tomorrowDate={tomorrowDate}
               showExpiredTasks={showExpiredTasks}
-              displayedTasks={displayedTasks}
+              tasks={tasks}
               todayIndex={todayIndex}
               section={section}
+              sectionIndex={sectionIndex}
+            >
+              {dateJapanese}
+            </TaskListSection>
+          );
+        } else if (showExpiredTasks) {
+          return (
+            <TaskListSection
+              title={title}
+              todayDate={todayDate}
+              tomorrowDate={tomorrowDate}
+              showExpiredTasks={showExpiredTasks}
+              tasks={tasks}
+              todayIndex={todayIndex}
+              section={section}
+              sectionIndex={sectionIndex}
             >
               {dateJapanese}
             </TaskListSection>
